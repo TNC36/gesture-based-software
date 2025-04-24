@@ -13,7 +13,7 @@ import pydirectinput as p
 from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtCore import QTimer
-from pynput.keyboard import Controller
+from pynput.keyboard import Controller, Key
 
 class GestureApp(QWidget):
     def __init__(self):
@@ -82,14 +82,19 @@ class GestureApp(QWidget):
         self.label.setText("Authenticating... Align your face.")
         access_granted = False
 
-        for _ in range(100):
+        max_frames = 30  # Reduced number of frames
+        for frame_count in range(max_frames):
             ret, frame = self.cap.read()
             if not ret:
                 continue
-            
+
+            # Process every 2nd frame to save time
+            if frame_count % 2 != 0:
+                continue
+
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             faces = self.face_analysis.get(frame_rgb)
-            
+
             if faces:
                 detected_encoding = faces[0].embedding
                 for user_name, stored_encoding in self.known_faces.items():
@@ -97,7 +102,10 @@ class GestureApp(QWidget):
                     if similarity > 0.5:
                         access_granted = True
                         break
-            
+
+            if access_granted:
+                break
+
             cv2.imshow("Face Authentication", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -134,18 +142,32 @@ class GestureApp(QWidget):
             if hand_results.multi_hand_landmarks:
                 for hand_landmarks in hand_results.multi_hand_landmarks:
                     fingers = self.fingers_up(hand_landmarks)
-                    if fingers == [1, 1, 1, 1, 1]:
-                        gesture = "Forward"
-                        p.keyDown('w')
+                    if fingers == [1,1, 1, 1, 1]:
+                        gesture = "forward"
+                        self.keyboard_controller.release(Key.left)
+                        self.keyboard_controller.press(Key.right)
+                        
                     elif fingers == [0, 0, 0, 0, 0]:
-                        gesture = "Stop"
-                        p.keyDown('s')
-                    elif fingers == [1, 0, 0, 0, 0]:
-                        gesture = "Right"
-                        p.keyDown('d')
-                    elif fingers == [0, 1, 0, 0, 0]:
-                        gesture = "Left"
-                        p.keyDown('a')
+                        gesture = "brake"
+                        self.keyboard_controller.release(Key.right)
+                        self.keyboard_controller.press(Key.left)
+                    # if fingers == [1, 1, 1, 1, 1]:
+                    #     # gesture = "Forward"
+                    #     # p.keyDown('w')
+                    #     p.keyDown('w')
+                    #     # os.system("start Forward.mp3")
+                    #     engine.say("Forward")
+                    #     engine.runAndWait()
+                    #     p.keyUp('w')
+                    # elif fingers == [0, 0, 0, 0, 0]:
+                    #     gesture = "Stop"
+                    #     p.keyDown('s')
+                    # elif fingers == [1, 0, 0, 0, 0]:
+                    #     gesture = "Right"
+                    #     p.keyDown('d')
+                    # elif fingers == [0, 1, 0, 0, 0]:
+                    #     gesture = "Left"
+                    #     p.keyDown('a')
                     elif fingers == [0, 1, 1, 0, 0]:
                         gesture = "Click"
                         pyautogui.click()

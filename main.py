@@ -3,7 +3,7 @@ import speech_recognition as sr
 import pyautogui
 import webbrowser
 import os
-import new1
+import gesture
 
 def in_engine():
     engine = pyttsx3.init("sapi5")
@@ -57,16 +57,25 @@ def open_browser(query):
 
 def intro(query):
     if 'introduce yourself' in query:
-        speak("Allow me to introduce myself I am Mantiso, the virtual artificial intelligence and Im here to assist you with a variety of tasks as best I can.")
+        speak("I am Mantiso, the virtual artificial intelligence and Im here to assist you with a variety of tasks as best I can.")
+        
 def register_user():
+    global names
     speak("by which name i should register you")
     nameing =get_voice_command().lower()
     names=nameing
-    speak(f'your name is {names}')
+    if names=="none":
+        speak("please repeat your name")
+        nameing =get_voice_command().lower()
+        names=nameing
+        speak(f'your name is {names}')
+    else:
+        speak(f'your name is {names}')
     # print(names)
     return names
 
 def register_User_file():
+    global names
     speak("by which name i should register your face id")
     nameing =get_voice_command().lower()
     names=nameing
@@ -103,21 +112,34 @@ if __name__ == "__main__":
         elif ('register me'  in query):
             register_user()
 
-        elif ("face" in query) or ("recogntion" in query):
+        elif ("face" in query) or ("recognition" in query):
             speak("Starting face recognition.")
-            if os.path.exists("reg1.py"):
-                os.system("python reg1.py")
+            if os.path.exists("registerFace.py"):
+                os.system("python registerFace.py")
             else:
-                print("Error: reg1.py not found.")
+                print("Error: registerFace.py not found.")
 
         elif ('gesture' in query) or ('start gesture' in query):
             speak("Starting gesture and eye recognition.")
-            if os.path.exists("new1.py"):
-                os.system("python new1.py")
+            if os.path.exists("gesture.py"):
+                os.system("python gesture.py")
             else:
-                print("Error: new1.py not found.")
-                
+                print("Error: gesture.py not found.")
+        
+        elif ('hill climb' in query) or ('start hill' in query):
+            speak("Starting gesture and eye recognition for hill climb game.")
+            if os.path.exists("hill.py"):
+                os.system("python hill.py")
+            else:
+                print("Error: hill.py not found.")
+
+        elif('take screcenshot' in query) or ('ss' in query):
+            speak('taking screenshot')
+            screenshot = pyautogui.screenshot()
+            screenshot.save("screenshot.png")
+            speak('screenshot saved')
+
+            
         elif ('pause camera' in query):
             speak('stoping the camera')
             
-# speak ("Hello, I'm JARVIS")

@@ -1,0 +1,18 @@
+1) website
+2) database website
+3) face detection
+4) face data saving 
+5) hand gesture :- gaming
+6) mood song
+7) document
+8) hand gesture for operating the laptop
+9) voice command
+10) gui graphical user interface
+4
+Dipanjan:-website, ppt
+Pranav:-database website, face detection, data saving
+Yash:-documentation, website design, research
+Tanishk:-hand gesture, voice command, gui
+
+
+
