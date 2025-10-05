@@ -8,11 +8,6 @@
 8) hand gesture for operating the laptop
 9) voice command
 10) gui graphical user interface
-4
-Dipanjan:-website, ppt
-Pranav:-database website, face detection, data saving
-Yash:-documentation, website design, research
-Tanishk:-hand gesture, voice command, gui
 
 
 
